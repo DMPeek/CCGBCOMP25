@@ -1,7 +1,7 @@
 # CCGBCOMP25
 Code Crew's Team Project for Gameboy Gamejam 2025
 
-GB GameJam Design Doc
+# GB GameJam Design Doc
 
 
 Puzzle-esque Scenes
