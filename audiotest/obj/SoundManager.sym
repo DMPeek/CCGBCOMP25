@@ -1,0 +1,85 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 1
+Hexadecimal [32-Bits]
+
+Symbol Table
+
+    .__.$$$.                                                    =   00002710 L
+    .__.ABS.                                                    =   00000000 G
+    .__.CPU.                                                    =   00000000 L
+    .__.H$L.                                                    =   00000000 L
+    _NR10_REG                                                       ******** GX
+    _NR11_REG                                                       ******** GX
+    _NR12_REG                                                       ******** GX
+    _NR13_REG                                                       ******** GX
+    _NR14_REG                                                       ******** GX
+    _NR21_REG                                                       ******** GX
+    _NR22_REG                                                       ******** GX
+    _NR23_REG                                                       ******** GX
+    _NR24_REG                                                       ******** GX
+    _NR30_REG                                                       ******** GX
+    _NR31_REG                                                       ******** GX
+    _NR32_REG                                                       ******** GX
+    _NR33_REG                                                       ******** GX
+    _NR34_REG                                                       ******** GX
+    _NR41_REG                                                       ******** GX
+    _NR42_REG                                                       ******** GX
+    _NR43_REG                                                       ******** GX
+    _NR44_REG                                                       ******** GX
+    _NR50_REG                                                       ******** GX
+    _NR51_REG                                                       ******** GX
+    _NR52_REG                                                       ******** GX
+  1 _SndChan                                                        00000009 GR
+  1 _SndDrums                                                       00000011 GR
+  1 _SndInBVar0                                                     00000002 GR
+  1 _SndInBVar1                                                     00000003 GR
+  1 _SndInBVar2                                                     00000004 GR
+  1 _SndInBVar3                                                     00000005 GR
+  1 _SndInBVar4                                                     00000006 GR
+  1 _SndInWFrequency                                                00000000 GR
+  1 _SndVoiceOnLeft                                                 00000007 GR
+  1 _SndVoiceOnRight                                                00000008 GR
+  0 _Snd_Beep                                                       00000192 GR
+  0 _Snd_Drum                                                       0000050D GR
+  0 _Snd_Init                                                       00000018 GR
+  0 _Snd_Play2                                                      00000167 GR
+  0 _Snd_PlayDrums                                                  00000477 GR
+  0 _Snd_PlayMusic_V2                                               00000399 GR
+  0 _Snd_PlayMusic_V3                                               00000406 GR
+  0 _Snd_Sound_V1                                                   0000003E GR
+  0 _Snd_Sound_V2                                                   00000052 GR
+  0 _Snd_Sound_V3                                                   00000062 GR
+  0 _Snd_Sound_V4                                                   00000076 GR
+  0 _Snd_Update                                                     00000386 GR
+  0 _Snd_Voice2                                                     000000AB GR
+  0 _Snd_Voice3                                                     000000D0 GR
+  0 _Snd_Voice4                                                     00000086 GR
+    _pTile                                                          ******** GX
+    _zSndDelays                                                     ******** GX
+    _zSndNotes                                                      ******** GX
+    _zSndV4_Drums                                                   ******** GX
+  0 _zSnd_C4_Play                                                   000001C4 GR
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
+Hexadecimal [32-Bits]
+
+Symbol Table
+
+  0 _zSnd_MusicAdvance                                              000000FA GR
+  0 _zSnd_Music_Play                                                0000029B GR
+  0 _zSnd_SetVolume                                                 00000000 GR
+
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 3
+Hexadecimal [32-Bits]
+
+Area Table
+
+   0 _CODE                                      size      567   flags    0
+   1 _DATA                                      size       19   flags    0
+   2 _INITIALIZED                               size        0   flags    0
+   3 _DABS                                      size        0   flags    8
+   4 _HOME                                      size        0   flags    0
+   5 _GSINIT                                    size        0   flags    0
+   6 _GSFINAL                                   size        0   flags    0
+   7 _INITIALIZER                               size        0   flags    0
+   8 _CABS                                      size        0   flags    8
+

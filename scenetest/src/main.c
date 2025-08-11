@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "../res/NumberTiles.h"
 #include "../res/splashscreen_tileset.h"
+#include "scaledown.c"
 
 int test;
 
