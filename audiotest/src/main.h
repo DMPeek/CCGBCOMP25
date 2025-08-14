@@ -4,7 +4,7 @@
 #include <gb/gb.h>
 #include "utils.h"
 #include "gfxDefines.h"
-#include "spriteManager.h"
+// #include "spriteManager.h"
 
 extern const u8 const musTwinkle[];
 extern const u8 const musTrack2[];
