@@ -7,7 +7,7 @@
 
 # NOTE GBDK_HOME needs to match your install path to gbdk
 # below is for Linux
-GBDK_HOME = /opt/gbdk/
+GBDK_HOME = /home/dij/d/c/gbdk/
 
 LCC = $(GBDK_HOME)bin/lcc
 
