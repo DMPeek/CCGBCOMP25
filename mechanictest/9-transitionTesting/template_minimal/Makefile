@@ -20,7 +20,7 @@ endif
 PROJECTNAME    = transitionTest
 
 BINS	    = $(PROJECTNAME).gb
-CSOURCES   := $(wildcard *.c)
+CSOURCES   := $(wildcard *.c) $(wildcard structures/*.c) $(wildcard maps/*.c)
 ASMSOURCES := $(wildcard *.s)
 
 all:	$(BINS)

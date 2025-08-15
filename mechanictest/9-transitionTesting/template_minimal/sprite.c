@@ -1,3 +1,5 @@
+#include "sprite.h"
+
 // arrays work the same as pointers and point to the first entry
 const unsigned char sprite_tileset[] = 
 {
