@@ -15,9 +15,9 @@ const u8 const musStarWars[]=
 
 const u8 const musTwinkle[]=
 {
-  PQ,RT,C4,
-  PQ,RT,C4,
-  PQ,RT,G4,
+  PQ,RT,C4,eSD_SNARE,
+  PQ,RT,C4,eSD_SNARE,
+  PQ,RT,G4,eSD_SNARE,
   PQ,RS,G4,
   PQ,RT,A4,
   PQ,RT,A4,
