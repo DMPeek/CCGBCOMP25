@@ -1,0 +1,72 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 1
+Hexadecimal [32-Bits]
+
+Symbol Table
+
+    .__.$$$.                                                    =   00002710 L
+    .__.ABS.                                                    =   00000000 G
+    .__.CPU.                                                    =   00000000 L
+    .__.H$L.                                                    =   00000000 L
+  0 _BoolToString                                                   00000016 GR
+  0 _ClrScreen                                                      00000069 GR
+  0 _ClrStripX                                                      0000013C GR
+  0 _ClrStripY                                                      0000016A GR
+    _DIV_REG                                                        ******** GX
+  0 _ErrorTrap                                                      00000000 GR
+  0 _IN_IsKeyDown                                                   000001BA GR
+  1 _IN_JoyNow                                                      00000006 GR
+  1 _IN_JoyOld                                                      00000007 GR
+  0 _IN_Update                                                      000001AD GR
+  0 _IN_WasKeyPressed                                               000001C8 GR
+  0 _InRange8                                                       00000483 GR
+  0 _InitRand                                                       00000121 GR
+  0 _IsBitSet                                                       000001A6 GR
+  1 _LSeed                                                          00000002 GR
+  0 _Print                                                          000001E9 GR
+  0 _PrintCentre                                                    00000226 GR
+  0 _PrintNum16                                                     00000377 GR
+  0 _PrintNum8                                                      000002A5 GR
+  0 _PrintNum8Hex                                                   0000031B GR
+  1 _PrintNum8Hex_hexL_10000_228                                    00000008 R
+  1 _PrintNum8Hex_hexR_10000_228                                    00000009 R
+  0 _Rnd                                                            00000131 GR
+  0 _SetTileData                                                    00000056 GR
+  0 _TickTimer_Init                                                 0000002D GR
+  0 _TickTimer_Reset                                                0000004C GR
+  0 _TickTimer_Update                                               00000039 GR
+  0 _TileGet                                                        0000019B GR
+  0 _TilePut                                                        0000007B GR
+  0 _TilePut2                                                       00000086 GR
+  0 _TilePut2X2                                                     000000BB GR
+  0 ___str_0                                                        00000022 R
+  0 ___str_1                                                        00000027 R
+    __moduchar                                                      ******** GX
+    _fill_bkg_rect                                                  ******** GX
+    _get_bkg_tile_xy                                                ******** GX
+    _get_bkg_xy_addr                                                ******** GX
+    _initrand                                                       ******** GX
+    _joypad                                                         ******** GX
+  1 _pSrc                                                           00000004 GR
+  1 _pTile                                                          00000000 GR
+    _rand                                                           ******** GX
+    _set_bkg_data                                                   ******** GX
+    _set_bkg_tile_xy                                                ******** GX
+    _set_vram_byte                                                  ******** GX
+    _vsync                                                          ******** GX
+
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
+Hexadecimal [32-Bits]
+
+Area Table
+
+   0 _CODE                                      size      496   flags    0
+   1 _DATA                                      size        A   flags    0
+   2 _INITIALIZED                               size        0   flags    0
+   3 _DABS                                      size        0   flags    8
+   4 _HOME                                      size        0   flags    0
+   5 _GSINIT                                    size        0   flags    0
+   6 _GSFINAL                                   size        0   flags    0
+   7 _INITIALIZER                               size        0   flags    0
+   8 _CABS                                      size        0   flags    8
+

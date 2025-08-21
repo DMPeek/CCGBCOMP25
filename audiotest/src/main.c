@@ -57,7 +57,7 @@ void main(void)
 
 		if(IN_WasKeyPressed(J_UP))
 		{
-			Snd_PlayMusic_V3(musStarWars);
+			Snd_PlayMusic_V3(song_Data);
 		}
 
 		if(IN_WasKeyPressed(J_START))

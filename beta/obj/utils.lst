@@ -1,0 +1,1254 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.5.1 #15267 (Linux)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module utils
+                                      6 	
+                                      7 ;--------------------------------------------------------
+                                      8 ; Public variables in this module
+                                      9 ;--------------------------------------------------------
+                                     10 	.globl _rand
+                                     11 	.globl _initrand
+                                     12 	.globl _fill_bkg_rect
+                                     13 	.globl _get_bkg_tile_xy
+                                     14 	.globl _set_bkg_tile_xy
+                                     15 	.globl _set_bkg_data
+                                     16 	.globl _get_bkg_xy_addr
+                                     17 	.globl _set_vram_byte
+                                     18 	.globl _vsync
+                                     19 	.globl _joypad
+                                     20 	.globl _IN_JoyOld
+                                     21 	.globl _IN_JoyNow
+                                     22 	.globl _pSrc
+                                     23 	.globl _LSeed
+                                     24 	.globl _pTile
+                                     25 	.globl _ErrorTrap
+                                     26 	.globl _BoolToString
+                                     27 	.globl _TickTimer_Init
+                                     28 	.globl _TickTimer_Update
+                                     29 	.globl _TickTimer_Reset
+                                     30 	.globl _SetTileData
+                                     31 	.globl _ClrScreen
+                                     32 	.globl _TilePut
+                                     33 	.globl _TilePut2
+                                     34 	.globl _TilePut2X2
+                                     35 	.globl _InitRand
+                                     36 	.globl _Rnd
+                                     37 	.globl _ClrStripX
+                                     38 	.globl _ClrStripY
+                                     39 	.globl _TileGet
+                                     40 	.globl _IsBitSet
+                                     41 	.globl _IN_Update
+                                     42 	.globl _IN_IsKeyDown
+                                     43 	.globl _IN_WasKeyPressed
+                                     44 	.globl _Print
+                                     45 	.globl _PrintCentre
+                                     46 	.globl _PrintNum8
+                                     47 	.globl _PrintNum8Hex
+                                     48 	.globl _PrintNum16
+                                     49 	.globl _InRange8
+                                     50 ;--------------------------------------------------------
+                                     51 ; special function registers
+                                     52 ;--------------------------------------------------------
+                                     53 ;--------------------------------------------------------
+                                     54 ; ram data
+                                     55 ;--------------------------------------------------------
+                                     56 	.area _DATA
+    00000000                         57 _pTile::
+    00000000                         58 	.ds 2
+    00000002                         59 _LSeed::
+    00000002                         60 	.ds 2
+    00000004                         61 _pSrc::
+    00000004                         62 	.ds 2
+    00000006                         63 _IN_JoyNow::
+    00000006                         64 	.ds 1
+    00000007                         65 _IN_JoyOld::
+    00000007                         66 	.ds 1
+    00000008                         67 _PrintNum8Hex_hexL_10000_228:
+    00000008                         68 	.ds 1
+    00000009                         69 _PrintNum8Hex_hexR_10000_228:
+    00000009                         70 	.ds 1
+                                     71 ;--------------------------------------------------------
+                                     72 ; ram data
+                                     73 ;--------------------------------------------------------
+                                     74 	.area _INITIALIZED
+                                     75 ;--------------------------------------------------------
+                                     76 ; absolute external ram data
+                                     77 ;--------------------------------------------------------
+                                     78 	.area _DABS (ABS)
+                                     79 ;--------------------------------------------------------
+                                     80 ; global & static initialisations
+                                     81 ;--------------------------------------------------------
+                                     82 	.area _HOME
+                                     83 	.area _GSINIT
+                                     84 	.area _GSFINAL
+                                     85 	.area _GSINIT
+                                     86 ;--------------------------------------------------------
+                                     87 ; Home
+                                     88 ;--------------------------------------------------------
+                                     89 	.area _HOME
+                                     90 	.area _HOME
+                                     91 ;--------------------------------------------------------
+                                     92 ; code
+                                     93 ;--------------------------------------------------------
+                                     94 	.area _CODE
+                                     95 ;audio/utils.c:9: void ErrorTrap(const char* errMsg)
+                                     96 ;	---------------------------------
+                                     97 ; Function ErrorTrap
+                                     98 ; ---------------------------------
+    00000000                         99 _ErrorTrap::
+                                    100 ;audio/utils.c:11: ClrStripX(0,1,20);
+    00000000 D5               [16]  101 	push	de
+    00000001 3E 14            [ 8]  102 	ld	a, #0x14
+    00000003 F5               [16]  103 	push	af
+    00000004 33               [ 8]  104 	inc	sp
+    00000005 1E 01            [ 8]  105 	ld	e, #0x01
+    00000007 AF               [ 4]  106 	xor	a, a
+    00000008 CDr3Cr01         [24]  107 	call	_ClrStripX
+                                    108 ;audio/utils.c:12: Print(0,1,errMsg);
+    0000000B 1E 01            [ 8]  109 	ld	e, #0x01
+    0000000D AF               [ 4]  110 	xor	a, a
+    0000000E CDrE9r01         [24]  111 	call	_Print
+                                    112 ;audio/utils.c:13: while(1)
+    00000011                        113 00102$:
+                                    114 ;audio/utils.c:15: vsync();
+    00000011 CDr00r00         [24]  115 	call	_vsync
+                                    116 ;audio/utils.c:17: }
+    00000014 18 FB            [12]  117 	jr	00102$
+                                    118 ;audio/utils.c:19: const char* BoolToString(bool result)
+                                    119 ;	---------------------------------
+                                    120 ; Function BoolToString
+                                    121 ; ---------------------------------
+    00000016                        122 _BoolToString::
+                                    123 ;audio/utils.c:21: if(result)
+    00000016 CB 47            [ 8]  124 	bit	0,a
+    00000018 28 04            [12]  125 	jr	Z, 00102$
+                                    126 ;audio/utils.c:23: return "TRUE";
+    0000001A 01r22r00         [12]  127 	ld	bc, #___str_0
+    0000001D C9               [16]  128 	ret
+    0000001E                        129 00102$:
+                                    130 ;audio/utils.c:27: return "FALSE";
+    0000001E 01r27r00         [12]  131 	ld	bc, #___str_1
+                                    132 ;audio/utils.c:29: }
+    00000021 C9               [16]  133 	ret
+    00000022                        134 ___str_0:
+    00000022 54 52 55 45            135 	.ascii "TRUE"
+    00000026 00                     136 	.db 0x00
+    00000027                        137 ___str_1:
+    00000027 46 41 4C 53 45         138 	.ascii "FALSE"
+    0000002C 00                     139 	.db 0x00
+                                    140 ;audio/utils.c:32: void TickTimer_Init(tTickTimer *pTT,u8 myDelay)
+                                    141 ;	---------------------------------
+                                    142 ; Function TickTimer_Init
+                                    143 ; ---------------------------------
+    0000002D                        144 _TickTimer_Init::
+                                    145 ;audio/utils.c:34: pTT->bHasTimeElapsed=false;
+    0000002D 6B               [ 4]  146 	ld	l, e
+    0000002E 62               [ 4]  147 	ld	h, d
+    0000002F 23               [ 8]  148 	inc	hl
+    00000030 23               [ 8]  149 	inc	hl
+    00000031 36 00            [12]  150 	ld	(hl), #0x00
+                                    151 ;audio/utils.c:35: pTT->nCountDown=myDelay;
+    00000033 4B               [ 4]  152 	ld	c, e
+    00000034 42               [ 4]  153 	ld	b, d
+    00000035 03               [ 8]  154 	inc	bc
+    00000036 02               [ 8]  155 	ld	(bc), a
+                                    156 ;audio/utils.c:36: pTT->nTimeVal=myDelay;
+    00000037 12               [ 8]  157 	ld	(de), a
+                                    158 ;audio/utils.c:37: }
+    00000038 C9               [16]  159 	ret
+                                    160 ;audio/utils.c:39: bool TickTimer_Update(tTickTimer *pTT)
+                                    161 ;	---------------------------------
+                                    162 ; Function TickTimer_Update
+                                    163 ; ---------------------------------
+    00000039                        164 _TickTimer_Update::
+                                    165 ;audio/utils.c:41: if(pTT->bHasTimeElapsed==false)
+    00000039 6B               [ 4]  166 	ld	l, e
+    0000003A 62               [ 4]  167 	ld	h, d
+    0000003B 23               [ 8]  168 	inc	hl
+    0000003C 23               [ 8]  169 	inc	hl
+    0000003D CB 46            [12]  170 	bit	0, (hl)
+    0000003F 20 09            [12]  171 	jr	NZ, 00104$
+                                    172 ;audio/utils.c:43: --pTT->nCountDown;
+    00000041 13               [ 8]  173 	inc	de
+    00000042 1A               [ 8]  174 	ld	a, (de)
+    00000043 3D               [ 4]  175 	dec	a
+    00000044 12               [ 8]  176 	ld	(de), a
+                                    177 ;audio/utils.c:44: if(pTT->nCountDown==0xFF)
+    00000045 3C               [ 4]  178 	inc	a
+    00000046 20 02            [12]  179 	jr	NZ, 00104$
+                                    180 ;audio/utils.c:45: pTT->bHasTimeElapsed=true;
+    00000048 36 01            [12]  181 	ld	(hl), #0x01
+    0000004A                        182 00104$:
+                                    183 ;audio/utils.c:48: return pTT->bHasTimeElapsed;
+    0000004A 7E               [ 8]  184 	ld	a, (hl)
+                                    185 ;audio/utils.c:49: }
+    0000004B C9               [16]  186 	ret
+                                    187 ;audio/utils.c:51: void TickTimer_Reset(tTickTimer *pTT)
+                                    188 ;	---------------------------------
+                                    189 ; Function TickTimer_Reset
+                                    190 ; ---------------------------------
+    0000004C                        191 _TickTimer_Reset::
+                                    192 ;audio/utils.c:53: pTT->nCountDown=pTT->nTimeVal;
+    0000004C 4B               [ 4]  193 	ld	c, e
+    0000004D 42               [ 4]  194 	ld	b, d
+    0000004E 03               [ 8]  195 	inc	bc
+    0000004F 1A               [ 8]  196 	ld	a, (de)
+    00000050 02               [ 8]  197 	ld	(bc), a
+                                    198 ;audio/utils.c:54: pTT->bHasTimeElapsed=false;
+    00000051 13               [ 8]  199 	inc	de
+    00000052 13               [ 8]  200 	inc	de
+    00000053 AF               [ 4]  201 	xor	a, a
+    00000054 12               [ 8]  202 	ld	(de), a
+                                    203 ;audio/utils.c:55: }
+    00000055 C9               [16]  204 	ret
+                                    205 ;audio/utils.c:57: void SetTileData(u8 nTileStart,u8 nTileCount,const u8 const *pTileData)
+                                    206 ;	---------------------------------
+                                    207 ; Function SetTileData
+                                    208 ; ---------------------------------
+    00000056                        209 _SetTileData::
+    00000056 43               [ 4]  210 	ld	b, e
+                                    211 ;audio/utils.c:59: set_bkg_2bpp_data(nTileStart,nTileCount,pTileData);
+    00000057 F8 02            [12]  212 	ldhl	sp,	#2
+    00000059 5E               [ 8]  213 	ld	e, (hl)
+    0000005A 23               [ 8]  214 	inc	hl
+    0000005B 56               [ 8]  215 	ld	d, (hl)
+    0000005C D5               [16]  216 	push	de
+    0000005D C5               [16]  217 	push	bc
+    0000005E 33               [ 8]  218 	inc	sp
+    0000005F F5               [16]  219 	push	af
+    00000060 33               [ 8]  220 	inc	sp
+    00000061 CDr00r00         [24]  221 	call	_set_bkg_data
+    00000064 E8 04            [16]  222 	add	sp, #4
+                                    223 ;audio/utils.c:60: }
+    00000066 E1               [12]  224 	pop	hl
+    00000067 F1               [12]  225 	pop	af
+    00000068 E9               [ 4]  226 	jp	(hl)
+                                    227 ;audio/utils.c:62: void ClrScreen(void)
+                                    228 ;	---------------------------------
+                                    229 ; Function ClrScreen
+                                    230 ; ---------------------------------
+    00000069                        231 _ClrScreen::
+                                    232 ;audio/utils.c:64: fill_bkg_rect(0,0,32,32,0);
+    00000069 AF               [ 4]  233 	xor	a, a
+    0000006A 67               [ 4]  234 	ld	h, a
+    0000006B 2E 20            [ 8]  235 	ld	l, #0x20
+    0000006D E5               [16]  236 	push	hl
+    0000006E 3E 20            [ 8]  237 	ld	a, #0x20
+    00000070 F5               [16]  238 	push	af
+    00000071 33               [ 8]  239 	inc	sp
+    00000072 AF               [ 4]  240 	xor	a, a
+    00000073 0F               [ 4]  241 	rrca
+    00000074 F5               [16]  242 	push	af
+    00000075 CDr00r00         [24]  243 	call	_fill_bkg_rect
+    00000078 E8 05            [16]  244 	add	sp, #5
+                                    245 ;audio/utils.c:65: }
+    0000007A C9               [16]  246 	ret
+                                    247 ;audio/utils.c:67: void TilePut(u8 x,u8 y,u8 nTile)
+                                    248 ;	---------------------------------
+                                    249 ; Function TilePut
+                                    250 ; ---------------------------------
+    0000007B                        251 _TilePut::
+                                    252 ;audio/utils.c:69: set_tile_xy(x,y,nTile);
+    0000007B F8 02            [12]  253 	ldhl	sp,	#2
+    0000007D 66               [ 8]  254 	ld	h, (hl)
+    0000007E E5               [16]  255 	push	hl
+    0000007F 33               [ 8]  256 	inc	sp
+    00000080 CDr00r00         [24]  257 	call	_set_bkg_tile_xy
+                                    258 ;audio/utils.c:70: }
+    00000083 E1               [12]  259 	pop	hl
+    00000084 33               [ 8]  260 	inc	sp
+    00000085 E9               [ 4]  261 	jp	(hl)
+                                    262 ;audio/utils.c:72: void TilePut2(u8 x,u8 y,u8 nTile)
+                                    263 ;	---------------------------------
+                                    264 ; Function TilePut2
+                                    265 ; ---------------------------------
+    00000086                        266 _TilePut2::
+    00000086 43               [ 4]  267 	ld	b, e
+                                    268 ;audio/utils.c:74: pTile=get_bkg_xy_addr(x,y);
+    00000087 C5               [16]  269 	push	bc
+    00000088 33               [ 8]  270 	inc	sp
+    00000089 F5               [16]  271 	push	af
+    0000008A 33               [ 8]  272 	inc	sp
+    0000008B CDr00r00         [24]  273 	call	_get_bkg_xy_addr
+    0000008E E1               [12]  274 	pop	hl
+    0000008F 21r00r00         [12]  275 	ld	hl, #_pTile
+    00000092 7B               [ 4]  276 	ld	a, e
+    00000093 22               [ 8]  277 	ld	(hl+), a
+    00000094 72               [ 8]  278 	ld	(hl), d
+                                    279 ;audio/utils.c:75: set_vram_byte(pTile,nTile);
+    00000095 F8 02            [12]  280 	ldhl	sp,	#2
+    00000097 7E               [ 8]  281 	ld	a, (hl)
+    00000098 21r00r00         [12]  282 	ld	hl, #_pTile
+    0000009B 5E               [ 8]  283 	ld	e, (hl)
+    0000009C 23               [ 8]  284 	inc	hl
+    0000009D 56               [ 8]  285 	ld	d, (hl)
+    0000009E CDr00r00         [24]  286 	call	_set_vram_byte
+                                    287 ;audio/utils.c:76: ++nTile;
+    000000A1 F8 02            [12]  288 	ldhl	sp,	#2
+    000000A3 34               [12]  289 	inc	(hl)
+                                    290 ;audio/utils.c:77: ++pTile;
+    000000A4 21r00r00         [12]  291 	ld	hl, #_pTile
+    000000A7 34               [12]  292 	inc	(hl)
+    000000A8 20 02            [12]  293 	jr	NZ, 00103$
+    000000AA 23               [ 8]  294 	inc	hl
+    000000AB 34               [12]  295 	inc	(hl)
+    000000AC                        296 00103$:
+                                    297 ;audio/utils.c:78: set_vram_byte(pTile,nTile);
+    000000AC F8 02            [12]  298 	ldhl	sp,	#2
+    000000AE 7E               [ 8]  299 	ld	a, (hl)
+    000000AF 21r00r00         [12]  300 	ld	hl, #_pTile
+    000000B2 5E               [ 8]  301 	ld	e, (hl)
+    000000B3 23               [ 8]  302 	inc	hl
+    000000B4 56               [ 8]  303 	ld	d, (hl)
+    000000B5 CDr00r00         [24]  304 	call	_set_vram_byte
+                                    305 ;audio/utils.c:79: }
+    000000B8 E1               [12]  306 	pop	hl
+    000000B9 33               [ 8]  307 	inc	sp
+    000000BA E9               [ 4]  308 	jp	(hl)
+                                    309 ;audio/utils.c:81: void TilePut2X2(u8 x,u8 y,u8 nTileStart)
+                                    310 ;	---------------------------------
+                                    311 ; Function TilePut2X2
+                                    312 ; ---------------------------------
+    000000BB                        313 _TilePut2X2::
+    000000BB 43               [ 4]  314 	ld	b, e
+                                    315 ;audio/utils.c:83: pTile=get_bkg_xy_addr(x,y);
+    000000BC C5               [16]  316 	push	bc
+    000000BD 33               [ 8]  317 	inc	sp
+    000000BE F5               [16]  318 	push	af
+    000000BF 33               [ 8]  319 	inc	sp
+    000000C0 CDr00r00         [24]  320 	call	_get_bkg_xy_addr
+    000000C3 E1               [12]  321 	pop	hl
+    000000C4 21r00r00         [12]  322 	ld	hl, #_pTile
+    000000C7 7B               [ 4]  323 	ld	a, e
+    000000C8 22               [ 8]  324 	ld	(hl+), a
+    000000C9 72               [ 8]  325 	ld	(hl), d
+                                    326 ;audio/utils.c:84: set_vram_byte(pTile,nTileStart);
+    000000CA F8 02            [12]  327 	ldhl	sp,	#2
+    000000CC 7E               [ 8]  328 	ld	a, (hl)
+    000000CD 21r00r00         [12]  329 	ld	hl, #_pTile
+    000000D0 5E               [ 8]  330 	ld	e, (hl)
+    000000D1 23               [ 8]  331 	inc	hl
+    000000D2 56               [ 8]  332 	ld	d, (hl)
+    000000D3 CDr00r00         [24]  333 	call	_set_vram_byte
+                                    334 ;audio/utils.c:85: ++nTileStart;
+    000000D6 F8 02            [12]  335 	ldhl	sp,	#2
+    000000D8 34               [12]  336 	inc	(hl)
+                                    337 ;audio/utils.c:86: ++pTile;
+    000000D9 21r00r00         [12]  338 	ld	hl, #_pTile
+    000000DC 34               [12]  339 	inc	(hl)
+    000000DD 20 02            [12]  340 	jr	NZ, 00103$
+    000000DF 23               [ 8]  341 	inc	hl
+    000000E0 34               [12]  342 	inc	(hl)
+    000000E1                        343 00103$:
+                                    344 ;audio/utils.c:87: set_vram_byte(pTile,nTileStart);
+    000000E1 F8 02            [12]  345 	ldhl	sp,	#2
+    000000E3 7E               [ 8]  346 	ld	a, (hl)
+    000000E4 21r00r00         [12]  347 	ld	hl, #_pTile
+    000000E7 5E               [ 8]  348 	ld	e, (hl)
+    000000E8 23               [ 8]  349 	inc	hl
+    000000E9 56               [ 8]  350 	ld	d, (hl)
+    000000EA CDr00r00         [24]  351 	call	_set_vram_byte
+                                    352 ;audio/utils.c:88: ++nTileStart; //skip to next line down on screen
+    000000ED F8 02            [12]  353 	ldhl	sp,	#2
+    000000EF 34               [12]  354 	inc	(hl)
+                                    355 ;audio/utils.c:89: pTile+=31;
+    000000F0 21r00r00         [12]  356 	ld	hl, #_pTile
+    000000F3 7E               [ 8]  357 	ld	a, (hl)
+    000000F4 C6 1F            [ 8]  358 	add	a, #0x1f
+    000000F6 22               [ 8]  359 	ld	(hl+), a
+    000000F7 7E               [ 8]  360 	ld	a, (hl)
+    000000F8 CE 00            [ 8]  361 	adc	a, #0x00
+    000000FA 77               [ 8]  362 	ld	(hl), a
+                                    363 ;audio/utils.c:90: set_vram_byte(pTile,nTileStart);
+    000000FB F8 02            [12]  364 	ldhl	sp,	#2
+    000000FD 7E               [ 8]  365 	ld	a, (hl)
+    000000FE 21r00r00         [12]  366 	ld	hl, #_pTile
+    00000101 5E               [ 8]  367 	ld	e, (hl)
+    00000102 23               [ 8]  368 	inc	hl
+    00000103 56               [ 8]  369 	ld	d, (hl)
+    00000104 CDr00r00         [24]  370 	call	_set_vram_byte
+                                    371 ;audio/utils.c:91: ++nTileStart;
+    00000107 F8 02            [12]  372 	ldhl	sp,	#2
+    00000109 34               [12]  373 	inc	(hl)
+                                    374 ;audio/utils.c:92: ++pTile;
+    0000010A 21r00r00         [12]  375 	ld	hl, #_pTile
+    0000010D 34               [12]  376 	inc	(hl)
+    0000010E 20 02            [12]  377 	jr	NZ, 00104$
+    00000110 23               [ 8]  378 	inc	hl
+    00000111 34               [12]  379 	inc	(hl)
+    00000112                        380 00104$:
+                                    381 ;audio/utils.c:93: set_vram_byte(pTile,nTileStart);
+    00000112 F8 02            [12]  382 	ldhl	sp,	#2
+    00000114 7E               [ 8]  383 	ld	a, (hl)
+    00000115 21r00r00         [12]  384 	ld	hl, #_pTile
+    00000118 5E               [ 8]  385 	ld	e, (hl)
+    00000119 23               [ 8]  386 	inc	hl
+    0000011A 56               [ 8]  387 	ld	d, (hl)
+    0000011B CDr00r00         [24]  388 	call	_set_vram_byte
+                                    389 ;audio/utils.c:94: }
+    0000011E E1               [12]  390 	pop	hl
+    0000011F 33               [ 8]  391 	inc	sp
+    00000120 E9               [ 4]  392 	jp	(hl)
+                                    393 ;audio/utils.c:97: void InitRand(void)
+                                    394 ;	---------------------------------
+                                    395 ; Function InitRand
+                                    396 ; ---------------------------------
+    00000121                        397 _InitRand::
+                                    398 ;audio/utils.c:99: LSeed|=DIV_REG;
+    00000121 F0r00            [12]  399 	ldh	a, (_DIV_REG + 0)
+    00000123 21r02r00         [12]  400 	ld	hl, #_LSeed
+    00000126 B6               [ 8]  401 	or	a, (hl)
+    00000127 77               [ 8]  402 	ld	(hl), a
+                                    403 ;audio/utils.c:100: initrand(LSeed);
+    00000128 2A               [ 8]  404 	ld	a, (hl+)
+    00000129 5F               [ 4]  405 	ld	e, a
+    0000012A 56               [ 8]  406 	ld	d, (hl)
+    0000012B D5               [16]  407 	push	de
+    0000012C CDr00r00         [24]  408 	call	_initrand
+    0000012F E1               [12]  409 	pop	hl
+                                    410 ;audio/utils.c:101: }
+    00000130 C9               [16]  411 	ret
+                                    412 ;audio/utils.c:103: u8 Rnd(u8 maxNum)
+                                    413 ;	---------------------------------
+                                    414 ; Function Rnd
+                                    415 ; ---------------------------------
+    00000131                        416 _Rnd::
+    00000131 4F               [ 4]  417 	ld	c, a
+                                    418 ;audio/utils.c:106: tv=rand();
+    00000132 CDr00r00         [24]  419 	call	_rand
+    00000135 7B               [ 4]  420 	ld	a, e
+                                    421 ;audio/utils.c:107: tv=tv%maxNum;
+    00000136 59               [ 4]  422 	ld	e, c
+                                    423 ;audio/utils.c:108: return tv;
+    00000137 CDr00r00         [24]  424 	call	__moduchar
+    0000013A 79               [ 4]  425 	ld	a, c
+                                    426 ;audio/utils.c:109: }
+    0000013B C9               [16]  427 	ret
+                                    428 ;audio/utils.c:111: void ClrStripX(u8 x,u8 y,u8 width)
+                                    429 ;	---------------------------------
+                                    430 ; Function ClrStripX
+                                    431 ; ---------------------------------
+    0000013C                        432 _ClrStripX::
+    0000013C 43               [ 4]  433 	ld	b, e
+                                    434 ;audio/utils.c:113: pTile=get_bkg_xy_addr(x,y);
+    0000013D C5               [16]  435 	push	bc
+    0000013E 33               [ 8]  436 	inc	sp
+    0000013F F5               [16]  437 	push	af
+    00000140 33               [ 8]  438 	inc	sp
+    00000141 CDr00r00         [24]  439 	call	_get_bkg_xy_addr
+    00000144 E1               [12]  440 	pop	hl
+    00000145 21r00r00         [12]  441 	ld	hl, #_pTile
+    00000148 7B               [ 4]  442 	ld	a, e
+    00000149 22               [ 8]  443 	ld	(hl+), a
+    0000014A 72               [ 8]  444 	ld	(hl), d
+                                    445 ;audio/utils.c:114: while(width)
+    0000014B F8 02            [12]  446 	ldhl	sp,	#2
+    0000014D 4E               [ 8]  447 	ld	c, (hl)
+    0000014E                        448 00101$:
+    0000014E 79               [ 4]  449 	ld	a, c
+    0000014F B7               [ 4]  450 	or	a, a
+    00000150 28 15            [12]  451 	jr	Z, 00104$
+                                    452 ;audio/utils.c:116: set_vram_byte(pTile,0);
+    00000152 AF               [ 4]  453 	xor	a, a
+    00000153 21r00r00         [12]  454 	ld	hl, #_pTile
+    00000156 5E               [ 8]  455 	ld	e, (hl)
+    00000157 23               [ 8]  456 	inc	hl
+    00000158 56               [ 8]  457 	ld	d, (hl)
+    00000159 CDr00r00         [24]  458 	call	_set_vram_byte
+                                    459 ;audio/utils.c:117: ++pTile;
+    0000015C 21r00r00         [12]  460 	ld	hl, #_pTile
+    0000015F 34               [12]  461 	inc	(hl)
+    00000160 20 02            [12]  462 	jr	NZ, 00121$
+    00000162 23               [ 8]  463 	inc	hl
+    00000163 34               [12]  464 	inc	(hl)
+    00000164                        465 00121$:
+                                    466 ;audio/utils.c:118: --width;
+    00000164 0D               [ 4]  467 	dec	c
+    00000165 18 E7            [12]  468 	jr	00101$
+    00000167                        469 00104$:
+                                    470 ;audio/utils.c:120: }
+    00000167 E1               [12]  471 	pop	hl
+    00000168 33               [ 8]  472 	inc	sp
+    00000169 E9               [ 4]  473 	jp	(hl)
+                                    474 ;audio/utils.c:122: void ClrStripY(u8 x,u8 y,u8 height)
+                                    475 ;	---------------------------------
+                                    476 ; Function ClrStripY
+                                    477 ; ---------------------------------
+    0000016A                        478 _ClrStripY::
+    0000016A 43               [ 4]  479 	ld	b, e
+                                    480 ;audio/utils.c:124: pTile=get_bkg_xy_addr(x,y);
+    0000016B C5               [16]  481 	push	bc
+    0000016C 33               [ 8]  482 	inc	sp
+    0000016D F5               [16]  483 	push	af
+    0000016E 33               [ 8]  484 	inc	sp
+    0000016F CDr00r00         [24]  485 	call	_get_bkg_xy_addr
+    00000172 E1               [12]  486 	pop	hl
+    00000173 21r00r00         [12]  487 	ld	hl, #_pTile
+    00000176 7B               [ 4]  488 	ld	a, e
+    00000177 22               [ 8]  489 	ld	(hl+), a
+    00000178 72               [ 8]  490 	ld	(hl), d
+                                    491 ;audio/utils.c:125: while(height)
+    00000179 F8 02            [12]  492 	ldhl	sp,	#2
+    0000017B 4E               [ 8]  493 	ld	c, (hl)
+    0000017C                        494 00101$:
+    0000017C 79               [ 4]  495 	ld	a, c
+    0000017D B7               [ 4]  496 	or	a, a
+    0000017E 28 18            [12]  497 	jr	Z, 00104$
+                                    498 ;audio/utils.c:127: set_vram_byte(pTile,0);
+    00000180 AF               [ 4]  499 	xor	a, a
+    00000181 21r00r00         [12]  500 	ld	hl, #_pTile
+    00000184 5E               [ 8]  501 	ld	e, (hl)
+    00000185 23               [ 8]  502 	inc	hl
+    00000186 56               [ 8]  503 	ld	d, (hl)
+    00000187 CDr00r00         [24]  504 	call	_set_vram_byte
+                                    505 ;audio/utils.c:128: pTile+=32;
+    0000018A 21r00r00         [12]  506 	ld	hl, #_pTile
+    0000018D 7E               [ 8]  507 	ld	a, (hl)
+    0000018E C6 20            [ 8]  508 	add	a, #0x20
+    00000190 22               [ 8]  509 	ld	(hl+), a
+    00000191 7E               [ 8]  510 	ld	a, (hl)
+    00000192 CE 00            [ 8]  511 	adc	a, #0x00
+    00000194 77               [ 8]  512 	ld	(hl), a
+                                    513 ;audio/utils.c:129: --height;
+    00000195 0D               [ 4]  514 	dec	c
+    00000196 18 E4            [12]  515 	jr	00101$
+    00000198                        516 00104$:
+                                    517 ;audio/utils.c:131: }
+    00000198 E1               [12]  518 	pop	hl
+    00000199 33               [ 8]  519 	inc	sp
+    0000019A E9               [ 4]  520 	jp	(hl)
+                                    521 ;audio/utils.c:133: u8 TileGet(u8 x, u8 y)
+                                    522 ;	---------------------------------
+                                    523 ; Function TileGet
+                                    524 ; ---------------------------------
+    0000019B                        525 _TileGet::
+    0000019B 43               [ 4]  526 	ld	b, e
+                                    527 ;audio/utils.c:135: return get_bkg_tile_xy(x,y);
+    0000019C C5               [16]  528 	push	bc
+    0000019D 33               [ 8]  529 	inc	sp
+    0000019E F5               [16]  530 	push	af
+    0000019F 33               [ 8]  531 	inc	sp
+    000001A0 CDr00r00         [24]  532 	call	_get_bkg_tile_xy
+    000001A3 E1               [12]  533 	pop	hl
+    000001A4 7B               [ 4]  534 	ld	a, e
+                                    535 ;audio/utils.c:136: }
+    000001A5 C9               [16]  536 	ret
+                                    537 ;audio/utils.c:138: bool IsBitSet(u8 var,u8 bit)
+                                    538 ;	---------------------------------
+                                    539 ; Function IsBitSet
+                                    540 ; ---------------------------------
+    000001A6                        541 _IsBitSet::
+                                    542 ;audio/utils.c:140: if((var & bit)==bit)
+    000001A6 A3               [ 4]  543 	and	a, e
+    000001A7 93               [ 4]  544 	sub	a, e
+                                    545 ;audio/utils.c:142: return true;
+                                    546 ;audio/utils.c:145: return false;
+    000001A8 3E 01            [ 8]  547 	ld	a, #0x01
+    000001AA C8               [20]  548 	ret	Z
+    000001AB AF               [ 4]  549 	xor	a, a
+                                    550 ;audio/utils.c:146: }
+    000001AC C9               [16]  551 	ret
+                                    552 ;audio/utils.c:148: void IN_Update()
+                                    553 ;	---------------------------------
+                                    554 ; Function IN_Update
+                                    555 ; ---------------------------------
+    000001AD                        556 _IN_Update::
+                                    557 ;audio/utils.c:150: IN_JoyOld=IN_JoyNow;
+    000001AD FAr06r00         [16]  558 	ld	a, (#_IN_JoyNow)
+    000001B0 EAr07r00         [16]  559 	ld	(#_IN_JoyOld),a
+                                    560 ;audio/utils.c:151: IN_JoyNow=joypad();
+    000001B3 CDr00r00         [24]  561 	call	_joypad
+    000001B6 EAr06r00         [16]  562 	ld	(#_IN_JoyNow),a
+                                    563 ;audio/utils.c:152: }
+    000001B9 C9               [16]  564 	ret
+                                    565 ;audio/utils.c:154: bool IN_IsKeyDown(u8 keyID)
+                                    566 ;	---------------------------------
+                                    567 ; Function IN_IsKeyDown
+                                    568 ; ---------------------------------
+    000001BA                        569 _IN_IsKeyDown::
+                                    570 ;audio/utils.c:156: if(IsBitSet(IN_JoyNow,keyID)==true)
+    000001BA 5F               [ 4]  571 	ld	e, a
+    000001BB FAr06r00         [16]  572 	ld	a, (_IN_JoyNow)
+    000001BE CDrA6r01         [24]  573 	call	_IsBitSet
+    000001C1 CB 47            [ 8]  574 	bit	0,a
+                                    575 ;audio/utils.c:158: return true;
+                                    576 ;audio/utils.c:161: return false;
+    000001C3 3E 01            [ 8]  577 	ld	a, #0x01
+    000001C5 C0               [20]  578 	ret	NZ
+    000001C6 AF               [ 4]  579 	xor	a, a
+                                    580 ;audio/utils.c:162: }
+    000001C7 C9               [16]  581 	ret
+                                    582 ;audio/utils.c:164: bool IN_WasKeyPressed(u8 keyID)
+                                    583 ;	---------------------------------
+                                    584 ; Function IN_WasKeyPressed
+                                    585 ; ---------------------------------
+    000001C8                        586 _IN_WasKeyPressed::
+    000001C8 5F               [ 4]  587 	ld	e, a
+                                    588 ;audio/utils.c:166: if(IsBitSet(IN_JoyOld,keyID))
+    000001C9 D5               [16]  589 	push	de
+    000001CA FAr07r00         [16]  590 	ld	a, (_IN_JoyOld)
+    000001CD CDrA6r01         [24]  591 	call	_IsBitSet
+    000001D0 4F               [ 4]  592 	ld	c, a
+    000001D1 D1               [12]  593 	pop	de
+    000001D2 CB 41            [ 8]  594 	bit	0, c
+    000001D4 28 11            [12]  595 	jr	Z, 00104$
+                                    596 ;audio/utils.c:168: if(!IsBitSet(IN_JoyNow,keyID))
+    000001D6 FAr06r00         [16]  597 	ld	a, (_IN_JoyNow)
+    000001D9 CDrA6r01         [24]  598 	call	_IsBitSet
+    000001DC CB 47            [ 8]  599 	bit	0,a
+    000001DE 20 07            [12]  600 	jr	NZ, 00104$
+                                    601 ;audio/utils.c:170: IN_JoyOld=0;
+    000001E0 AF               [ 4]  602 	xor	a, a
+    000001E1 EAr07r00         [16]  603 	ld	(#_IN_JoyOld),a
+                                    604 ;audio/utils.c:171: return true;
+    000001E4 3E 01            [ 8]  605 	ld	a, #0x01
+    000001E6 C9               [16]  606 	ret
+    000001E7                        607 00104$:
+                                    608 ;audio/utils.c:174: return false;
+    000001E7 AF               [ 4]  609 	xor	a, a
+                                    610 ;audio/utils.c:175: }
+    000001E8 C9               [16]  611 	ret
+                                    612 ;audio/utils.c:177: void Print(u8 x,u8 y,const char* msg)
+                                    613 ;	---------------------------------
+                                    614 ; Function Print
+                                    615 ; ---------------------------------
+    000001E9                        616 _Print::
+    000001E9 43               [ 4]  617 	ld	b, e
+                                    618 ;audio/utils.c:179: pTile=get_bkg_xy_addr(x,y);
+    000001EA C5               [16]  619 	push	bc
+    000001EB 33               [ 8]  620 	inc	sp
+    000001EC F5               [16]  621 	push	af
+    000001ED 33               [ 8]  622 	inc	sp
+    000001EE CDr00r00         [24]  623 	call	_get_bkg_xy_addr
+    000001F1 E1               [12]  624 	pop	hl
+    000001F2 21r00r00         [12]  625 	ld	hl, #_pTile
+    000001F5 7B               [ 4]  626 	ld	a, e
+    000001F6 22               [ 8]  627 	ld	(hl+), a
+    000001F7 72               [ 8]  628 	ld	(hl), d
+                                    629 ;audio/utils.c:180: x=*msg;
+    000001F8 F8 02            [12]  630 	ldhl	sp,	#2
+    000001FA 2A               [ 8]  631 	ld	a, (hl+)
+    000001FB 4F               [ 4]  632 	ld	c, a
+                                    633 ;audio/utils.c:181: ++msg;
+    000001FC 3A               [ 8]  634 	ld	a, (hl-)
+    000001FD 47               [ 4]  635 	ld	b, a
+    000001FE 0A               [ 8]  636 	ld	a, (bc)
+    000001FF 5F               [ 4]  637 	ld	e, a
+    00000200 03               [ 8]  638 	inc	bc
+    00000201 79               [ 4]  639 	ld	a, c
+    00000202 22               [ 8]  640 	ld	(hl+), a
+                                    641 ;audio/utils.c:182: while(x)
+    00000203 78               [ 4]  642 	ld	a, b
+    00000204 32               [ 8]  643 	ld	(hl-), a
+    00000205 2A               [ 8]  644 	ld	a, (hl+)
+    00000206 4F               [ 4]  645 	ld	c, a
+    00000207 46               [ 8]  646 	ld	b, (hl)
+    00000208                        647 00101$:
+    00000208 7B               [ 4]  648 	ld	a, e
+    00000209 B7               [ 4]  649 	or	a, a
+    0000020A 28 17            [12]  650 	jr	Z, 00104$
+                                    651 ;audio/utils.c:184: set_vram_byte(pTile,x);
+    0000020C 7B               [ 4]  652 	ld	a, e
+    0000020D 21r00r00         [12]  653 	ld	hl, #_pTile
+    00000210 5E               [ 8]  654 	ld	e, (hl)
+    00000211 23               [ 8]  655 	inc	hl
+    00000212 56               [ 8]  656 	ld	d, (hl)
+    00000213 CDr00r00         [24]  657 	call	_set_vram_byte
+                                    658 ;audio/utils.c:185: ++pTile;
+    00000216 21r00r00         [12]  659 	ld	hl, #_pTile
+    00000219 34               [12]  660 	inc	(hl)
+    0000021A 20 02            [12]  661 	jr	NZ, 00121$
+    0000021C 23               [ 8]  662 	inc	hl
+    0000021D 34               [12]  663 	inc	(hl)
+    0000021E                        664 00121$:
+                                    665 ;audio/utils.c:186: x=*msg;
+    0000021E 0A               [ 8]  666 	ld	a, (bc)
+    0000021F 5F               [ 4]  667 	ld	e, a
+                                    668 ;audio/utils.c:187: ++msg;
+    00000220 03               [ 8]  669 	inc	bc
+    00000221 18 E5            [12]  670 	jr	00101$
+    00000223                        671 00104$:
+                                    672 ;audio/utils.c:189: }
+    00000223 E1               [12]  673 	pop	hl
+    00000224 F1               [12]  674 	pop	af
+    00000225 E9               [ 4]  675 	jp	(hl)
+                                    676 ;audio/utils.c:191: void PrintCentre(u8 y,const char* msg)
+                                    677 ;	---------------------------------
+                                    678 ; Function PrintCentre
+                                    679 ; ---------------------------------
+    00000226                        680 _PrintCentre::
+    00000226 3B               [ 8]  681 	dec	sp
+    00000227 F8 00            [12]  682 	ldhl	sp,	#0
+    00000229 77               [ 8]  683 	ld	(hl), a
+    0000022A 4B               [ 4]  684 	ld	c, e
+    0000022B 42               [ 4]  685 	ld	b, d
+                                    686 ;audio/utils.c:195: pTile=&msg[0];
+    0000022C 21r00r00         [12]  687 	ld	hl, #_pTile
+    0000022F 79               [ 4]  688 	ld	a, c
+    00000230 22               [ 8]  689 	ld	(hl+), a
+                                    690 ;audio/utils.c:197: x=*pTile;
+    00000231 78               [ 4]  691 	ld	a, b
+    00000232 32               [ 8]  692 	ld	(hl-), a
+    00000233 6E               [ 8]  693 	ld	l, (hl)
+    00000234 FAr01r00         [16]  694 	ld	a, (_pTile + 1)
+    00000237 67               [ 4]  695 	ld	h, a
+    00000238 56               [ 8]  696 	ld	d, (hl)
+                                    697 ;audio/utils.c:198: ++pTile;
+    00000239 21r00r00         [12]  698 	ld	hl, #_pTile
+    0000023C 34               [12]  699 	inc	(hl)
+    0000023D 20 02            [12]  700 	jr	NZ, 00157$
+    0000023F 23               [ 8]  701 	inc	hl
+    00000240 34               [12]  702 	inc	(hl)
+    00000241                        703 00157$:
+                                    704 ;audio/utils.c:199: while(x)
+    00000241 1E 00            [ 8]  705 	ld	e, #0x00
+    00000243                        706 00101$:
+    00000243 7A               [ 4]  707 	ld	a, d
+    00000244 B7               [ 4]  708 	or	a, a
+    00000245 28 14            [12]  709 	jr	Z, 00119$
+                                    710 ;audio/utils.c:201: ++l;
+    00000247 1C               [ 4]  711 	inc	e
+                                    712 ;audio/utils.c:202: x=*pTile;
+    00000248 FAr00r00         [16]  713 	ld	a, (_pTile)
+    0000024B 6F               [ 4]  714 	ld	l, a
+    0000024C FAr01r00         [16]  715 	ld	a, (_pTile + 1)
+    0000024F 67               [ 4]  716 	ld	h, a
+    00000250 56               [ 8]  717 	ld	d, (hl)
+                                    718 ;audio/utils.c:203: ++pTile;
+    00000251 21r00r00         [12]  719 	ld	hl, #_pTile
+    00000254 34               [12]  720 	inc	(hl)
+    00000255 20 EC            [12]  721 	jr	NZ, 00101$
+    00000257 23               [ 8]  722 	inc	hl
+    00000258 34               [12]  723 	inc	(hl)
+    00000259 18 E8            [12]  724 	jr	00101$
+    0000025B                        725 00119$:
+    0000025B 53               [ 4]  726 	ld	d, e
+                                    727 ;audio/utils.c:206: if(l>20)
+    0000025C 3E 14            [ 8]  728 	ld	a, #0x14
+    0000025E 93               [ 4]  729 	sub	a, e
+    0000025F 30 02            [12]  730 	jr	NC, 00105$
+                                    731 ;audio/utils.c:207: l=20;
+    00000261 16 14            [ 8]  732 	ld	d, #0x14
+    00000263                        733 00105$:
+                                    734 ;audio/utils.c:209: x=(l>>1);
+    00000263 7A               [ 4]  735 	ld	a, d
+    00000264 CB 3F            [ 8]  736 	srl	a
+                                    737 ;audio/utils.c:210: if(x>10)
+    00000266 FE 0B            [ 8]  738 	cp	a, #0x0b
+    00000268 38 02            [12]  739 	jr	C, 00107$
+                                    740 ;audio/utils.c:211: x=10;
+    0000026A 3E 0A            [ 8]  741 	ld	a, #0x0a
+    0000026C                        742 00107$:
+                                    743 ;audio/utils.c:212: x=10-x;
+    0000026C 5F               [ 4]  744 	ld	e, a
+    0000026D 3E 0A            [ 8]  745 	ld	a, #0x0a
+    0000026F 93               [ 4]  746 	sub	a, e
+                                    747 ;audio/utils.c:213: pTile=get_bkg_xy_addr(x,y);
+    00000270 D5               [16]  748 	push	de
+    00000271 F8 02            [12]  749 	ldhl	sp,	#2
+    00000273 66               [ 8]  750 	ld	h, (hl)
+    00000274 E5               [16]  751 	push	hl
+    00000275 33               [ 8]  752 	inc	sp
+    00000276 F5               [16]  753 	push	af
+    00000277 33               [ 8]  754 	inc	sp
+    00000278 CDr00r00         [24]  755 	call	_get_bkg_xy_addr
+    0000027B E1               [12]  756 	pop	hl
+    0000027C 6A               [ 4]  757 	ld	l, d
+    0000027D F1               [12]  758 	pop	af
+    0000027E 57               [ 4]  759 	ld	d, a
+    0000027F 7B               [ 4]  760 	ld	a, e
+    00000280 EAr00r00         [16]  761 	ld	(_pTile), a
+    00000283 7D               [ 4]  762 	ld	a, l
+    00000284 EAr01r00         [16]  763 	ld	(_pTile + 1), a
+                                    764 ;audio/utils.c:214: while(l)
+    00000287                        765 00108$:
+    00000287 7A               [ 4]  766 	ld	a, d
+    00000288 B7               [ 4]  767 	or	a, a
+    00000289 28 18            [12]  768 	jr	Z, 00111$
+                                    769 ;audio/utils.c:216: x=*msg;
+    0000028B 0A               [ 8]  770 	ld	a, (bc)
+                                    771 ;audio/utils.c:217: ++msg;
+    0000028C 03               [ 8]  772 	inc	bc
+                                    773 ;audio/utils.c:218: set_vram_byte(pTile,x);
+    0000028D D5               [16]  774 	push	de
+    0000028E 21r00r00         [12]  775 	ld	hl, #_pTile
+    00000291 5E               [ 8]  776 	ld	e, (hl)
+    00000292 23               [ 8]  777 	inc	hl
+    00000293 56               [ 8]  778 	ld	d, (hl)
+    00000294 CDr00r00         [24]  779 	call	_set_vram_byte
+    00000297 D1               [12]  780 	pop	de
+                                    781 ;audio/utils.c:219: ++pTile;
+    00000298 21r00r00         [12]  782 	ld	hl, #_pTile
+    0000029B 34               [12]  783 	inc	(hl)
+    0000029C 20 02            [12]  784 	jr	NZ, 00159$
+    0000029E 23               [ 8]  785 	inc	hl
+    0000029F 34               [12]  786 	inc	(hl)
+    000002A0                        787 00159$:
+                                    788 ;audio/utils.c:220: --l;
+    000002A0 15               [ 4]  789 	dec	d
+    000002A1 18 E4            [12]  790 	jr	00108$
+    000002A3                        791 00111$:
+                                    792 ;audio/utils.c:222: }
+    000002A3 33               [ 8]  793 	inc	sp
+    000002A4 C9               [16]  794 	ret
+                                    795 ;audio/utils.c:224: void PrintNum8(u8 x,u8 y,u8 val8)
+                                    796 ;	---------------------------------
+                                    797 ; Function PrintNum8
+                                    798 ; ---------------------------------
+    000002A5                        799 _PrintNum8::
+    000002A5 43               [ 4]  800 	ld	b, e
+                                    801 ;audio/utils.c:228: pTile=get_bkg_xy_addr(x,y);
+    000002A6 C5               [16]  802 	push	bc
+    000002A7 33               [ 8]  803 	inc	sp
+    000002A8 F5               [16]  804 	push	af
+    000002A9 33               [ 8]  805 	inc	sp
+    000002AA CDr00r00         [24]  806 	call	_get_bkg_xy_addr
+    000002AD E1               [12]  807 	pop	hl
+    000002AE 21r00r00         [12]  808 	ld	hl, #_pTile
+    000002B1 7B               [ 4]  809 	ld	a, e
+    000002B2 22               [ 8]  810 	ld	(hl+), a
+    000002B3 72               [ 8]  811 	ld	(hl), d
+                                    812 ;audio/utils.c:230: while(val8>=100)
+    000002B4 0E 00            [ 8]  813 	ld	c, #0x00
+    000002B6                        814 00101$:
+    000002B6 F8 02            [12]  815 	ldhl	sp,	#2
+    000002B8 7E               [ 8]  816 	ld	a, (hl)
+    000002B9 D6 64            [ 8]  817 	sub	a, #0x64
+    000002BB 38 07            [12]  818 	jr	C, 00120$
+                                    819 ;audio/utils.c:232: ++h;
+    000002BD 0C               [ 4]  820 	inc	c
+                                    821 ;audio/utils.c:233: val8-=100;
+    000002BE 7E               [ 8]  822 	ld	a, (hl)
+    000002BF C6 9C            [ 8]  823 	add	a, #0x9c
+    000002C1 77               [ 8]  824 	ld	(hl), a
+    000002C2 18 F2            [12]  825 	jr	00101$
+                                    826 ;audio/utils.c:236: while(val8>=10)
+    000002C4                        827 00120$:
+    000002C4 1E 00            [ 8]  828 	ld	e, #0x00
+    000002C6                        829 00104$:
+                                    830 ;audio/utils.c:233: val8-=100;
+    000002C6 F8 02            [12]  831 	ldhl	sp,	#2
+                                    832 ;audio/utils.c:236: while(val8>=10)
+    000002C8 7E               [ 8]  833 	ld	a,(hl)
+    000002C9 47               [ 4]  834 	ld	b,a
+    000002CA D6 0A            [ 8]  835 	sub	a, #0x0a
+    000002CC 38 07            [12]  836 	jr	C, 00121$
+                                    837 ;audio/utils.c:238: ++t;
+    000002CE 1C               [ 4]  838 	inc	e
+                                    839 ;audio/utils.c:239: val8-=10;
+    000002CF 78               [ 4]  840 	ld	a, b
+    000002D0 C6 F6            [ 8]  841 	add	a, #0xf6
+    000002D2 77               [ 8]  842 	ld	(hl), a
+    000002D3 18 F1            [12]  843 	jr	00104$
+    000002D5                        844 00121$:
+                                    845 ;audio/utils.c:243: if(h>0)
+    000002D5 79               [ 4]  846 	ld	a, c
+    000002D6 B7               [ 4]  847 	or	a, a
+    000002D7 28 18            [12]  848 	jr	Z, 00108$
+                                    849 ;audio/utils.c:245: c='0'+h;
+    000002D9 79               [ 4]  850 	ld	a, c
+    000002DA C6 30            [ 8]  851 	add	a, #0x30
+                                    852 ;audio/utils.c:246: h=1;
+    000002DC 0E 01            [ 8]  853 	ld	c, #0x01
+                                    854 ;audio/utils.c:248: set_vram_byte(pTile,c);
+    000002DE D5               [16]  855 	push	de
+    000002DF 21r00r00         [12]  856 	ld	hl, #_pTile
+    000002E2 5E               [ 8]  857 	ld	e, (hl)
+    000002E3 23               [ 8]  858 	inc	hl
+    000002E4 56               [ 8]  859 	ld	d, (hl)
+    000002E5 CDr00r00         [24]  860 	call	_set_vram_byte
+    000002E8 D1               [12]  861 	pop	de
+                                    862 ;audio/utils.c:249: ++pTile;
+    000002E9 21r00r00         [12]  863 	ld	hl, #_pTile
+    000002EC 34               [12]  864 	inc	(hl)
+    000002ED 20 02            [12]  865 	jr	NZ, 00158$
+    000002EF 23               [ 8]  866 	inc	hl
+    000002F0 34               [12]  867 	inc	(hl)
+    000002F1                        868 00158$:
+    000002F1                        869 00108$:
+                                    870 ;audio/utils.c:252: if((t>0) || (h>0))
+    000002F1 7B               [ 4]  871 	ld	a, e
+    000002F2 B7               [ 4]  872 	or	a, a
+    000002F3 20 03            [12]  873 	jr	NZ, 00109$
+    000002F5 B1               [ 4]  874 	or	a, c
+    000002F6 28 14            [12]  875 	jr	Z, 00110$
+    000002F8                        876 00109$:
+                                    877 ;audio/utils.c:254: c='0'+t;
+    000002F8 7B               [ 4]  878 	ld	a, e
+    000002F9 C6 30            [ 8]  879 	add	a, #0x30
+                                    880 ;audio/utils.c:255: set_vram_byte(pTile,c);
+    000002FB 21r00r00         [12]  881 	ld	hl, #_pTile
+    000002FE 5E               [ 8]  882 	ld	e, (hl)
+    000002FF 23               [ 8]  883 	inc	hl
+    00000300 56               [ 8]  884 	ld	d, (hl)
+    00000301 CDr00r00         [24]  885 	call	_set_vram_byte
+                                    886 ;audio/utils.c:256: ++pTile;
+    00000304 21r00r00         [12]  887 	ld	hl, #_pTile
+    00000307 34               [12]  888 	inc	(hl)
+    00000308 20 02            [12]  889 	jr	NZ, 00159$
+    0000030A 23               [ 8]  890 	inc	hl
+    0000030B 34               [12]  891 	inc	(hl)
+    0000030C                        892 00159$:
+    0000030C                        893 00110$:
+                                    894 ;audio/utils.c:259: c='0'+val8;
+    0000030C 78               [ 4]  895 	ld	a, b
+    0000030D C6 30            [ 8]  896 	add	a, #0x30
+                                    897 ;audio/utils.c:260: set_vram_byte(pTile,c);
+    0000030F 21r00r00         [12]  898 	ld	hl, #_pTile
+    00000312 5E               [ 8]  899 	ld	e, (hl)
+    00000313 23               [ 8]  900 	inc	hl
+    00000314 56               [ 8]  901 	ld	d, (hl)
+    00000315 CDr00r00         [24]  902 	call	_set_vram_byte
+                                    903 ;audio/utils.c:261: }
+    00000318 E1               [12]  904 	pop	hl
+    00000319 33               [ 8]  905 	inc	sp
+    0000031A E9               [ 4]  906 	jp	(hl)
+                                    907 ;audio/utils.c:263: void PrintNum8Hex(u8 x,u8 y,u8 var)
+                                    908 ;	---------------------------------
+                                    909 ; Function PrintNum8Hex
+                                    910 ; ---------------------------------
+    0000031B                        911 _PrintNum8Hex::
+    0000031B 57               [ 4]  912 	ld	d, a
+                                    913 ;audio/utils.c:268: hexR=var & 15u;
+    0000031C F8 02            [12]  914 	ldhl	sp,	#2
+    0000031E 4E               [ 8]  915 	ld	c, (hl)
+    0000031F 79               [ 4]  916 	ld	a, c
+    00000320 E6 0F            [ 8]  917 	and	a, #0x0f
+    00000322 EAr09r00         [16]  918 	ld	(#_PrintNum8Hex_hexR_10000_228),a
+                                    919 ;audio/utils.c:269: hexL=var;
+    00000325 21r08r00         [12]  920 	ld	hl, #_PrintNum8Hex_hexL_10000_228
+    00000328 71               [ 8]  921 	ld	(hl), c
+                                    922 ;audio/utils.c:270: hexL>>=4;
+    00000329 7E               [ 8]  923 	ld	a, (hl)
+    0000032A CB 37            [ 8]  924 	swap	a
+    0000032C E6 0F            [ 8]  925 	and	a, #0x0f
+    0000032E 77               [ 8]  926 	ld	(hl), a
+                                    927 ;audio/utils.c:273: hexL-=10;
+    0000032F 4E               [ 8]  928 	ld	c, (hl)
+                                    929 ;audio/utils.c:271: if(hexL>9)
+    00000330 3E 09            [ 8]  930 	ld	a, #0x09
+    00000332 96               [ 8]  931 	sub	a, (hl)
+    00000333 30 09            [12]  932 	jr	NC, 00102$
+                                    933 ;audio/utils.c:273: hexL-=10;
+    00000335 79               [ 4]  934 	ld	a, c
+    00000336 C6 F6            [ 8]  935 	add	a, #0xf6
+                                    936 ;audio/utils.c:274: hexL+='A';
+    00000338 77               [ 8]  937 	ld	(hl), a
+    00000339 C6 41            [ 8]  938 	add	a, #0x41
+    0000033B 77               [ 8]  939 	ld	(hl), a
+    0000033C 18 06            [12]  940 	jr	00103$
+    0000033E                        941 00102$:
+                                    942 ;audio/utils.c:278: hexL+='0';
+    0000033E 79               [ 4]  943 	ld	a, c
+    0000033F C6 30            [ 8]  944 	add	a, #0x30
+    00000341 EAr08r00         [16]  945 	ld	(#_PrintNum8Hex_hexL_10000_228),a
+    00000344                        946 00103$:
+                                    947 ;audio/utils.c:283: hexR-=10;
+    00000344 FAr09r00         [16]  948 	ld	a, (_PrintNum8Hex_hexR_10000_228)
+    00000347 4F               [ 4]  949 	ld	c, a
+                                    950 ;audio/utils.c:281: if(hexR>9)
+    00000348 3E 09            [ 8]  951 	ld	a, #0x09
+    0000034A 21r09r00         [12]  952 	ld	hl, #_PrintNum8Hex_hexR_10000_228
+    0000034D 96               [ 8]  953 	sub	a, (hl)
+    0000034E 30 09            [12]  954 	jr	NC, 00105$
+                                    955 ;audio/utils.c:283: hexR-=10;
+    00000350 79               [ 4]  956 	ld	a, c
+    00000351 C6 F6            [ 8]  957 	add	a, #0xf6
+                                    958 ;audio/utils.c:284: hexR+='A';
+    00000353 77               [ 8]  959 	ld	(hl), a
+    00000354 C6 41            [ 8]  960 	add	a, #0x41
+    00000356 77               [ 8]  961 	ld	(hl), a
+    00000357 18 06            [12]  962 	jr	00106$
+    00000359                        963 00105$:
+                                    964 ;audio/utils.c:288: hexR+='0';
+    00000359 79               [ 4]  965 	ld	a, c
+    0000035A C6 30            [ 8]  966 	add	a, #0x30
+    0000035C EAr09r00         [16]  967 	ld	(#_PrintNum8Hex_hexR_10000_228),a
+    0000035F                        968 00106$:
+                                    969 ;audio/utils.c:291: TilePut(x,y,hexL);
+    0000035F D5               [16]  970 	push	de
+    00000360 FAr08r00         [16]  971 	ld	a, (_PrintNum8Hex_hexL_10000_228)
+    00000363 F5               [16]  972 	push	af
+    00000364 33               [ 8]  973 	inc	sp
+    00000365 7A               [ 4]  974 	ld	a, d
+    00000366 CDr7Br00         [24]  975 	call	_TilePut
+    00000369 D1               [12]  976 	pop	de
+                                    977 ;audio/utils.c:292: ++x;
+    0000036A 14               [ 4]  978 	inc	d
+                                    979 ;audio/utils.c:293: TilePut(x,y,hexR);
+    0000036B FAr09r00         [16]  980 	ld	a, (_PrintNum8Hex_hexR_10000_228)
+    0000036E F5               [16]  981 	push	af
+    0000036F 33               [ 8]  982 	inc	sp
+    00000370 7A               [ 4]  983 	ld	a, d
+    00000371 CDr7Br00         [24]  984 	call	_TilePut
+                                    985 ;audio/utils.c:294: }
+    00000374 E1               [12]  986 	pop	hl
+    00000375 33               [ 8]  987 	inc	sp
+    00000376 E9               [ 4]  988 	jp	(hl)
+                                    989 ;audio/utils.c:296: void PrintNum16(u8 x,u8 y,u16 val16)
+                                    990 ;	---------------------------------
+                                    991 ; Function PrintNum16
+                                    992 ; ---------------------------------
+    00000377                        993 _PrintNum16::
+    00000377 E8 FD            [16]  994 	add	sp, #-3
+    00000379 43               [ 4]  995 	ld	b, e
+                                    996 ;audio/utils.c:300: pTile=get_bkg_xy_addr(x,y);
+    0000037A C5               [16]  997 	push	bc
+    0000037B 33               [ 8]  998 	inc	sp
+    0000037C F5               [16]  999 	push	af
+    0000037D 33               [ 8] 1000 	inc	sp
+    0000037E CDr00r00         [24] 1001 	call	_get_bkg_xy_addr
+    00000381 E1               [12] 1002 	pop	hl
+    00000382 21r00r00         [12] 1003 	ld	hl, #_pTile
+    00000385 7B               [ 4] 1004 	ld	a, e
+    00000386 22               [ 8] 1005 	ld	(hl+), a
+    00000387 72               [ 8] 1006 	ld	(hl), d
+                                   1007 ;audio/utils.c:302: while(val16>=10000)
+    00000388 0E 00            [ 8] 1008 	ld	c, #0x00
+    0000038A                       1009 00101$:
+    0000038A F8 05            [12] 1010 	ldhl	sp,	#5
+    0000038C 2A               [ 8] 1011 	ld	a, (hl+)
+    0000038D 5F               [ 4] 1012 	ld	e, a
+    0000038E 56               [ 8] 1013 	ld	d, (hl)
+    0000038F 7B               [ 4] 1014 	ld	a, e
+    00000390 D6 10            [ 8] 1015 	sub	a, #0x10
+    00000392 7A               [ 4] 1016 	ld	a, d
+    00000393 DE 27            [ 8] 1017 	sbc	a, #0x27
+    00000395 38 0E            [12] 1018 	jr	C, 00138$
+                                   1019 ;audio/utils.c:304: ++a;
+                                   1020 ;audio/utils.c:305: val16-=10000;
+    00000397 2B               [ 8] 1021 	dec	hl
+    00000398 0C               [ 4] 1022 	inc	c
+    00000399 7B               [ 4] 1023 	ld	a, e
+    0000039A C6 F0            [ 8] 1024 	add	a, #0xf0
+    0000039C 47               [ 4] 1025 	ld	b, a
+    0000039D 7A               [ 4] 1026 	ld	a, d
+    0000039E CE D8            [ 8] 1027 	adc	a, #0xd8
+    000003A0 70               [ 8] 1028 	ld	(hl), b
+    000003A1 23               [ 8] 1029 	inc	hl
+    000003A2 77               [ 8] 1030 	ld	(hl), a
+    000003A3 18 E5            [12] 1031 	jr	00101$
+                                   1032 ;audio/utils.c:308: while(val16>=1000)
+    000003A5                       1033 00138$:
+    000003A5 06 00            [ 8] 1034 	ld	b, #0x00
+    000003A7                       1035 00104$:
+    000003A7 F8 05            [12] 1036 	ldhl	sp,	#5
+    000003A9 2A               [ 8] 1037 	ld	a, (hl+)
+    000003AA 5F               [ 4] 1038 	ld	e, a
+    000003AB 56               [ 8] 1039 	ld	d, (hl)
+    000003AC 7B               [ 4] 1040 	ld	a, e
+    000003AD D6 E8            [ 8] 1041 	sub	a, #0xe8
+    000003AF 7A               [ 4] 1042 	ld	a, d
+    000003B0 DE 03            [ 8] 1043 	sbc	a, #0x03
+    000003B2 38 0E            [12] 1044 	jr	C, 00139$
+                                   1045 ;audio/utils.c:310: ++b;
+                                   1046 ;audio/utils.c:311: val16-=1000;
+    000003B4 2B               [ 8] 1047 	dec	hl
+    000003B5 04               [ 4] 1048 	inc	b
+    000003B6 7B               [ 4] 1049 	ld	a, e
+    000003B7 C6 18            [ 8] 1050 	add	a, #0x18
+    000003B9 5F               [ 4] 1051 	ld	e, a
+    000003BA 7A               [ 4] 1052 	ld	a, d
+    000003BB CE FC            [ 8] 1053 	adc	a, #0xfc
+    000003BD 73               [ 8] 1054 	ld	(hl), e
+    000003BE 23               [ 8] 1055 	inc	hl
+    000003BF 77               [ 8] 1056 	ld	(hl), a
+    000003C0 18 E5            [12] 1057 	jr	00104$
+                                   1058 ;audio/utils.c:314: while(val16>=100)
+    000003C2                       1059 00139$:
+    000003C2 F8 00            [12] 1060 	ldhl	sp,	#0
+    000003C4 70               [ 8] 1061 	ld	(hl), b
+    000003C5 06 00            [ 8] 1062 	ld	b, #0x00
+    000003C7                       1063 00107$:
+    000003C7 F8 05            [12] 1064 	ldhl	sp,	#5
+    000003C9 2A               [ 8] 1065 	ld	a, (hl+)
+    000003CA 5F               [ 4] 1066 	ld	e, a
+    000003CB 56               [ 8] 1067 	ld	d, (hl)
+    000003CC 7B               [ 4] 1068 	ld	a, e
+    000003CD D6 64            [ 8] 1069 	sub	a, #0x64
+    000003CF 7A               [ 4] 1070 	ld	a, d
+    000003D0 DE 00            [ 8] 1071 	sbc	a, #0x00
+    000003D2 38 0E            [12] 1072 	jr	C, 00140$
+                                   1073 ;audio/utils.c:316: ++h;
+                                   1074 ;audio/utils.c:317: val16-=100;
+    000003D4 2B               [ 8] 1075 	dec	hl
+    000003D5 04               [ 4] 1076 	inc	b
+    000003D6 7B               [ 4] 1077 	ld	a, e
+    000003D7 C6 9C            [ 8] 1078 	add	a, #0x9c
+    000003D9 5F               [ 4] 1079 	ld	e, a
+    000003DA 7A               [ 4] 1080 	ld	a, d
+    000003DB CE FF            [ 8] 1081 	adc	a, #0xff
+    000003DD 73               [ 8] 1082 	ld	(hl), e
+    000003DE 23               [ 8] 1083 	inc	hl
+    000003DF 77               [ 8] 1084 	ld	(hl), a
+    000003E0 18 E5            [12] 1085 	jr	00107$
+    000003E2                       1086 00140$:
+    000003E2 F8 01            [12] 1087 	ldhl	sp,	#1
+    000003E4 70               [ 8] 1088 	ld	(hl), b
+                                   1089 ;audio/utils.c:319: u=(u8)val16;
+    000003E5 F8 05            [12] 1090 	ldhl	sp,	#5
+    000003E7 7E               [ 8] 1091 	ld	a, (hl)
+                                   1092 ;audio/utils.c:321: while(u>=10)
+    000003E8 1E 00            [ 8] 1093 	ld	e, #0x00
+    000003EA                       1094 00110$:
+                                   1095 ;audio/utils.c:324: u-=10;
+    000003EA F8 02            [12] 1096 	ldhl	sp,	#2
+    000003EC 77               [ 8] 1097 	ld	(hl), a
+                                   1098 ;audio/utils.c:321: while(u>=10)
+    000003ED D6 0A            [ 8] 1099 	sub	a, #0x0a
+    000003EF 38 06            [12] 1100 	jr	C, 00141$
+                                   1101 ;audio/utils.c:323: ++t;
+    000003F1 1C               [ 4] 1102 	inc	e
+                                   1103 ;audio/utils.c:324: u-=10;
+    000003F2 7E               [ 8] 1104 	ld	a, (hl)
+    000003F3 C6 F6            [ 8] 1105 	add	a, #0xf6
+    000003F5 18 F3            [12] 1106 	jr	00110$
+    000003F7                       1107 00141$:
+    000003F7 43               [ 4] 1108 	ld	b, e
+                                   1109 ;audio/utils.c:327: if(a>0)
+    000003F8 79               [ 4] 1110 	ld	a, c
+    000003F9 B7               [ 4] 1111 	or	a, a
+    000003FA 28 16            [12] 1112 	jr	Z, 00114$
+                                   1113 ;audio/utils.c:329: c='0'+a;
+    000003FC 79               [ 4] 1114 	ld	a, c
+    000003FD C6 30            [ 8] 1115 	add	a, #0x30
+                                   1116 ;audio/utils.c:330: a=1;
+    000003FF 0E 01            [ 8] 1117 	ld	c, #0x01
+                                   1118 ;audio/utils.c:332: set_vram_byte(pTile,c);
+    00000401 21r00r00         [12] 1119 	ld	hl, #_pTile
+    00000404 5E               [ 8] 1120 	ld	e, (hl)
+    00000405 23               [ 8] 1121 	inc	hl
+    00000406 56               [ 8] 1122 	ld	d, (hl)
+    00000407 CDr00r00         [24] 1123 	call	_set_vram_byte
+                                   1124 ;audio/utils.c:333: ++pTile;
+    0000040A 21r00r00         [12] 1125 	ld	hl, #_pTile
+    0000040D 34               [12] 1126 	inc	(hl)
+    0000040E 20 02            [12] 1127 	jr	NZ, 00214$
+    00000410 23               [ 8] 1128 	inc	hl
+    00000411 34               [12] 1129 	inc	(hl)
+    00000412                       1130 00214$:
+    00000412                       1131 00114$:
+                                   1132 ;audio/utils.c:336: if((a>0) || (b>0))
+    00000412 79               [ 4] 1133 	ld	a, c
+    00000413 B7               [ 4] 1134 	or	a, a
+    00000414 20 06            [12] 1135 	jr	NZ, 00115$
+    00000416 F8 00            [12] 1136 	ldhl	sp,	#0
+    00000418 7E               [ 8] 1137 	ld	a, (hl)
+    00000419 B7               [ 4] 1138 	or	a, a
+    0000041A 28 18            [12] 1139 	jr	Z, 00116$
+    0000041C                       1140 00115$:
+                                   1141 ;audio/utils.c:338: c='0'+b;
+    0000041C F8 00            [12] 1142 	ldhl	sp,	#0
+    0000041E 7E               [ 8] 1143 	ld	a, (hl)
+    0000041F C6 30            [ 8] 1144 	add	a, #0x30
+                                   1145 ;audio/utils.c:339: a=1;
+    00000421 0E 01            [ 8] 1146 	ld	c, #0x01
+                                   1147 ;audio/utils.c:341: set_vram_byte(pTile,c);
+    00000423 21r00r00         [12] 1148 	ld	hl, #_pTile
+    00000426 5E               [ 8] 1149 	ld	e, (hl)
+    00000427 23               [ 8] 1150 	inc	hl
+    00000428 56               [ 8] 1151 	ld	d, (hl)
+    00000429 CDr00r00         [24] 1152 	call	_set_vram_byte
+                                   1153 ;audio/utils.c:342: ++pTile;
+    0000042C 21r00r00         [12] 1154 	ld	hl, #_pTile
+    0000042F 34               [12] 1155 	inc	(hl)
+    00000430 20 02            [12] 1156 	jr	NZ, 00215$
+    00000432 23               [ 8] 1157 	inc	hl
+    00000433 34               [12] 1158 	inc	(hl)
+    00000434                       1159 00215$:
+    00000434                       1160 00116$:
+                                   1161 ;audio/utils.c:345: if((h>0) || (a>0))
+    00000434 F8 01            [12] 1162 	ldhl	sp,	#1
+    00000436 7E               [ 8] 1163 	ld	a, (hl)
+    00000437 B7               [ 4] 1164 	or	a, a
+    00000438 20 03            [12] 1165 	jr	NZ, 00118$
+    0000043A B1               [ 4] 1166 	or	a, c
+    0000043B 28 18            [12] 1167 	jr	Z, 00119$
+    0000043D                       1168 00118$:
+                                   1169 ;audio/utils.c:347: c='0'+h;
+    0000043D F8 01            [12] 1170 	ldhl	sp,	#1
+    0000043F 7E               [ 8] 1171 	ld	a, (hl)
+    00000440 C6 30            [ 8] 1172 	add	a, #0x30
+                                   1173 ;audio/utils.c:348: a=1;
+    00000442 0E 01            [ 8] 1174 	ld	c, #0x01
+                                   1175 ;audio/utils.c:350: set_vram_byte(pTile,c);
+    00000444 21r00r00         [12] 1176 	ld	hl, #_pTile
+    00000447 5E               [ 8] 1177 	ld	e, (hl)
+    00000448 23               [ 8] 1178 	inc	hl
+    00000449 56               [ 8] 1179 	ld	d, (hl)
+    0000044A CDr00r00         [24] 1180 	call	_set_vram_byte
+                                   1181 ;audio/utils.c:351: ++pTile;
+    0000044D 21r00r00         [12] 1182 	ld	hl, #_pTile
+    00000450 34               [12] 1183 	inc	(hl)
+    00000451 20 02            [12] 1184 	jr	NZ, 00216$
+    00000453 23               [ 8] 1185 	inc	hl
+    00000454 34               [12] 1186 	inc	(hl)
+    00000455                       1187 00216$:
+    00000455                       1188 00119$:
+                                   1189 ;audio/utils.c:354: if((t>0) || (a>0))
+    00000455 78               [ 4] 1190 	ld	a, b
+    00000456 B7               [ 4] 1191 	or	a, a
+    00000457 20 03            [12] 1192 	jr	NZ, 00121$
+    00000459 B1               [ 4] 1193 	or	a, c
+    0000045A 28 14            [12] 1194 	jr	Z, 00122$
+    0000045C                       1195 00121$:
+                                   1196 ;audio/utils.c:356: c='0'+t;
+    0000045C 78               [ 4] 1197 	ld	a, b
+    0000045D C6 30            [ 8] 1198 	add	a, #0x30
+                                   1199 ;audio/utils.c:357: set_vram_byte(pTile,c);
+    0000045F 21r00r00         [12] 1200 	ld	hl, #_pTile
+    00000462 5E               [ 8] 1201 	ld	e, (hl)
+    00000463 23               [ 8] 1202 	inc	hl
+    00000464 56               [ 8] 1203 	ld	d, (hl)
+    00000465 CDr00r00         [24] 1204 	call	_set_vram_byte
+                                   1205 ;audio/utils.c:358: ++pTile;
+    00000468 21r00r00         [12] 1206 	ld	hl, #_pTile
+    0000046B 34               [12] 1207 	inc	(hl)
+    0000046C 20 02            [12] 1208 	jr	NZ, 00217$
+    0000046E 23               [ 8] 1209 	inc	hl
+    0000046F 34               [12] 1210 	inc	(hl)
+    00000470                       1211 00217$:
+    00000470                       1212 00122$:
+                                   1213 ;audio/utils.c:361: c='0'+u;
+    00000470 F8 02            [12] 1214 	ldhl	sp,	#2
+    00000472 7E               [ 8] 1215 	ld	a, (hl)
+    00000473 C6 30            [ 8] 1216 	add	a, #0x30
+                                   1217 ;audio/utils.c:362: set_vram_byte(pTile,c);
+    00000475 21r00r00         [12] 1218 	ld	hl, #_pTile
+    00000478 5E               [ 8] 1219 	ld	e, (hl)
+    00000479 23               [ 8] 1220 	inc	hl
+    0000047A 56               [ 8] 1221 	ld	d, (hl)
+    0000047B CDr00r00         [24] 1222 	call	_set_vram_byte
+                                   1223 ;audio/utils.c:363: }
+    0000047E E8 03            [16] 1224 	add	sp, #3
+    00000480 E1               [12] 1225 	pop	hl
+    00000481 F1               [12] 1226 	pop	af
+    00000482 E9               [ 4] 1227 	jp	(hl)
+                                   1228 ;audio/utils.c:365: bool InRange8(u8 varIn,u8 rangeMin,u8 rangeMax)
+                                   1229 ;	---------------------------------
+                                   1230 ; Function InRange8
+                                   1231 ; ---------------------------------
+    00000483                       1232 _InRange8::
+    00000483 4F               [ 4] 1233 	ld	c, a
+                                   1234 ;audio/utils.c:368: return ((varIn<=rangeMax) && (rangeMin<=varIn));
+    00000484 F8 02            [12] 1235 	ldhl	sp,	#2
+    00000486 7E               [ 8] 1236 	ld	a, (hl)
+    00000487 91               [ 4] 1237 	sub	a, c
+    00000488 38 04            [12] 1238 	jr	C, 00103$
+    0000048A 79               [ 4] 1239 	ld	a, c
+    0000048B 93               [ 4] 1240 	sub	a, e
+    0000048C 30 03            [12] 1241 	jr	NC, 00104$
+    0000048E                       1242 00103$:
+    0000048E AF               [ 4] 1243 	xor	a, a
+    0000048F 18 02            [12] 1244 	jr	00105$
+    00000491                       1245 00104$:
+    00000491 3E 01            [ 8] 1246 	ld	a, #0x01
+    00000493                       1247 00105$:
+                                   1248 ;audio/utils.c:369: }
+    00000493 E1               [12] 1249 	pop	hl
+    00000494 33               [ 8] 1250 	inc	sp
+    00000495 E9               [ 4] 1251 	jp	(hl)
+                                   1252 	.area _CODE
+                                   1253 	.area _INITIALIZER
+                                   1254 	.area _CABS (ABS)

@@ -40,6 +40,7 @@ void splashscreen() {
 
     // Fill screen with splashscreen map
     set_bkg_tiles(0, 0, 20, 18, splashscreen_tilemap);
+    
 }
 
 void testscreen() {
