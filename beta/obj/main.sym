@@ -7,13 +7,37 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
+    _GAMEPLAY                                                       ******** GX
     _LCDC_REG                                                       ******** GX
-  0 ___str_0                                                        00000034 R
-  0 ___str_1                                                        0000003A R
-  0 ___str_2                                                        0000003C R
+    _LOSESCREEN                                                     ******** GX
+    _MENUSCREEN                                                     ******** GX
+    _STAGE                                                          ******** GX
+    _STARTSCREEN                                                    ******** GX
+    _TRANSITIONSCREEN                                               ******** GX
+    _TileMap                                                        ******** GX
+    _Tiles                                                          ******** GX
+    _WINSCREEN                                                      ******** GX
+    _hideCharacterSprites                                           ******** GX
     _joypad                                                         ******** GX
+    _loadLoss                                                       ******** GX
+    _loadMenu                                                       ******** GX
+    _loadStage                                                      ******** GX
+    _loadStart                                                      ******** GX
+    _loadTransition                                                 ******** GX
+    _loadWin                                                        ******** GX
   0 _main                                                           00000000 GR
-    _printf                                                         ******** GX
+    _moveCharacter                                                  ******** GX
+    _moveCharacterWithLR                                            ******** GX
+    _player1                                                        ******** GX
+    _playerControl                                                  ******** GX
+    _set_bkg_data                                                   ******** GX
+    _set_bkg_tiles                                                  ******** GX
+    _set_sprite_data                                                ******** GX
+    _setupCharacter                                                 ******** GX
+    _viking_tilemap                                                 ******** GX
+    _viking_tileset                                                 ******** GX
+    _vsync                                                          ******** GX
+    _wait_vbl_done                                                  ******** GX
 
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
@@ -21,7 +45,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size       3E   flags    0
+   0 _CODE                                      size      167   flags    0
    1 _DATA                                      size        0   flags    0
    2 _INITIALIZED                               size        0   flags    0
    3 _DABS                                      size        0   flags    8

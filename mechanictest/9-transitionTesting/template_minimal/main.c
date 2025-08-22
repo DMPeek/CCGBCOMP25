@@ -30,55 +30,6 @@ void main(void)
         uint8_t buttons = joypad();
 
         
-        //start screen to menu screen
-        if ((buttons & J_START) && (STARTSCREEN == 1)) {
-            loadMenu();
-            STARTSCREEN = 0;
-        };
-
-        //menu screen to trnaistion screen or back to start screen
-        if ((buttons & J_A) && (MENUSCREEN == 1)) {
-            loadTransition();
-            MENUSCREEN = 0;
-        } else if ((buttons & J_B) && (MENUSCREEN == 1)) {
-            loadStart();
-            MENUSCREEN = 0;
-        } else {
-        };
-
-        //transition screen to stage screen
-        if ((buttons & J_START) && (TRANSITIONSCREEN == 1)) {
-            loadStage();
-            TRANSITIONSCREEN = 0;
-        };
-        
-        // stage screen to win screen or lose screen
-        if ((buttons & J_UP) && (STAGE == 1)) {
-            loadWin();
-            STAGE = 0;
-            GAMEPLAY = 0;
-            hideCharacterSprites(&player1);
-            hideCharacterSprites(&player2);
-        } else if ((buttons & J_DOWN) && (STAGE == 1)) {
-            loadLoss();
-            STAGE = 0;
-            GAMEPLAY = 0;
-            hideCharacterSprites(&player1);
-            hideCharacterSprites(&player2);
-        } else {
-        };
-
-        //win screen to start screen
-        if ((buttons & J_A) && (WINSCREEN == 1)) {
-            loadStart();
-            WINSCREEN = 0;
-        }
-
-        //lose screen to start screen
-        if ((buttons & J_A) && (LOSESCREEN == 1)) {
-            loadStart();
-            LOSESCREEN = 0;
-        };
 
         playerControl();
       
