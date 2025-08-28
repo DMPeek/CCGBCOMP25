@@ -14,6 +14,7 @@ int TRANSITIONSCREEN = 0;
 int WINSCREEN = 0;
 int LOSESCREEN = 0;
 int TRANSITIONCOUNTER = 0;
+int STAGEPICK = 0;
 
 void loadStage(void) {
     // fill bank 0 with character sprite
@@ -48,34 +49,46 @@ void playerControl(void) {
     };
 }
 
+void pointerControl(void) {
+    if (MENUSCREEN == 1){
+        movePointerWithUD(&pointer);
+    }
+}
+
 void loadStart(void) {
     STARTSCREEN = 1;
-    set_bkg_data(0,16,TileLabel);
+    set_bkg_data(0,19,TileLabel);
     set_bkg_tiles(0,0,SCREEN_W,SCREEN_H,startScreen);
 }
 
 void loadMenu(void) {
     MENUSCREEN = 1;
-    set_bkg_data(0,16,TileLabel);
+    STAGEPICK = 1;
+
+    set_sprite_data(0, pointer_tilemap_size, pointer_tileset);
+    setupCharacter(&pointer, 0, 1, 1, 0, 1, pointer_tilemap);
+    moveCharacter(&pointer, 40, 56);
+
+    set_bkg_data(0,19,TileLabel);
     set_bkg_tiles(0,0,SCREEN_W,SCREEN_H,levelSelect);
 }
 
 void loadTransition(void) {
     TRANSITIONSCREEN = 1;
     TRANSITIONCOUNTER = 0;
-    set_bkg_data(0,16,TileLabel);
+    set_bkg_data(0,19,TileLabel);
     set_bkg_tiles(0,0,SCREEN_W,SCREEN_H,stageTransition);
 }
 
 void loadWin(void) {
     WINSCREEN = 1;
-    set_bkg_data(0,16,TileLabel);
+    set_bkg_data(0,19,TileLabel);
     set_bkg_tiles(0,0,SCREEN_W,SCREEN_H,youWin);
 }
 
 void loadLoss(void) {
     LOSESCREEN = 1;
-    set_bkg_data(0,16,TileLabel);
+    set_bkg_data(0,19,TileLabel);
     set_bkg_tiles(0,0,SCREEN_W,SCREEN_H,youLose);
 }
 

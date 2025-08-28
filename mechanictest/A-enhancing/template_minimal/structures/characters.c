@@ -1,9 +1,12 @@
 #include "characters.h"
+#include "../loadingFunctions.h"
 
 Character player1;
 Character player2;
 Character star;
+Character pointer;
 
+extern int STAGEPICK;
 
 void loadSpriteFrame(Character *character,uint8_t frame) 
 {
@@ -47,7 +50,7 @@ void moveCharacterWithLR(Character *character)
 {
     uint8_t buttons = joypad();
 
-    uint8_t moveX = 0;
+    int8_t moveX = 0;
     uint8_t moveY = 0;
 
     if (buttons & J_LEFT){
@@ -63,7 +66,7 @@ void moveCharacterWithAB(Character *character)
 {
     uint8_t buttons = joypad();  
 
-    uint8_t moveX = 0;
+    int8_t moveX = 0;
     uint8_t moveY = 0;
 
     if (buttons & J_A){
@@ -72,7 +75,38 @@ void moveCharacterWithAB(Character *character)
     else if (buttons & J_B){
         moveX = 1;
     }
-      scrollCharacter(character, moveX, moveY);
+    scrollCharacter(character, moveX, moveY);
+}
+
+void movePointerWithUD(Character *character)
+{
+
+    static uint8_t prev_buttons = 0;
+    uint8_t buttons = joypad();
+    
+    uint8_t moveX = 0;
+    int8_t moveY = 0;
+
+    // only moves sprite once per button press
+    if ((buttons & J_UP) && !(prev_buttons & J_UP)) {
+        if (character->y_pos == 56) {
+            return;
+        } else {
+            moveY = -16;
+            STAGEPICK--;
+            if (STAGEPICK < 1) STAGEPICK = 1;
+        }
+    } else if ((buttons & J_DOWN) && !(prev_buttons & J_DOWN)) {
+        if (character->y_pos == 88) {
+            return;
+        } else {
+            moveY = 16;
+            STAGEPICK++;
+            if (STAGEPICK > 3) STAGEPICK = 3;
+        }
+    }
+    scrollCharacter(character, moveX, moveY);
+    prev_buttons = buttons; // holds value of last button pressed
 }
 
 void setupCharacter (Character *character, uint8_t spriteId, uint8_t tileWidth, uint8_t tileHeight, uint8_t tileSetStart, uint8_t totalFrames, const unsigned char *tilemap) 

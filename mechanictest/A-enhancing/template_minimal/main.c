@@ -49,15 +49,28 @@ void main(void)
             STARTSCREEN = 0;
         };
 
-        //menu screen to trnaistion screen or back to start screen
-        if ((buttons & J_A) && (MENUSCREEN == 1)) {
-            loadTransition();
-            MENUSCREEN = 0;
-        } else if ((buttons & J_B) && (MENUSCREEN == 1)) {
+        //menu screen to transition screen or back to start screen
+        if ((buttons & J_B) && (MENUSCREEN == 1)) {
             loadStart();
             MENUSCREEN = 0;
-        } else {
-        };
+            STAGEPICK = 0;
+            hideCharacterSprites(&pointer);
+        } else if ((buttons & J_A) && (STAGEPICK == 1)) {
+            loadTransition();
+            MENUSCREEN = 0;
+            STAGEPICK = 0;
+            hideCharacterSprites(&pointer);
+        } else if ((buttons & J_A) && (STAGEPICK == 2)) {
+            loadTransition();
+            MENUSCREEN = 0;
+            STAGEPICK = 0;
+            hideCharacterSprites(&pointer);
+        } else if ((buttons & J_A) && (STAGEPICK == 3)) {
+            loadTransition();
+            MENUSCREEN = 0;
+            STAGEPICK = 0;
+            hideCharacterSprites(&pointer);
+        }
 
         //transition screen to stage screen
         if (TRANSITIONSCREEN == 1) {
@@ -106,6 +119,7 @@ void main(void)
         };
 
         playerControl();
+        pointerControl();
       
 
 		// Game main loop processing goes here
