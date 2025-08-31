@@ -29,11 +29,24 @@ const unsigned char * song_Data[] = {
     0x0000
 };
 
+const u8 const amazingGrace[] = {
+    PQ, RT, D5,
+    PH, RT, G5,
+    PE, RT, B5,
+    PE, RT, G5,
+    PW, RT, B5,
+    PQ, RT, A5,
+    PH, RT, G5,
+    PQ, RT, E5,
+    PH, RT, D5,
+    END, END, END
+};
+
 const u8 const musTwinkle[]=
 {
-  PQ,RT,C4,eSD_SNARE,
-  PQ,RT,C4,eSD_SNARE,
-  PQ,RT,G4,eSD_SNARE,
+  PQ,RT,C4,
+  PQ,RT,C4,
+  PQ,RT,G4,
   PQ,RS,G4,
   PQ,RT,A4,
   PQ,RT,A4,

@@ -57,7 +57,7 @@ void main(void)
 
 		if(IN_WasKeyPressed(J_UP))
 		{
-			Snd_PlayMusic_V3(song_Data);
+			Snd_PlayMusic_V3(amazingGrace);
 		}
 
 		if(IN_WasKeyPressed(J_START))
@@ -75,8 +75,8 @@ void main(void)
 		if(IN_WasKeyPressed(J_A))
 		{
 			ClrStripX(0,2,20);
-			Print(0,2,"Play Twinkle");
-			Snd_PlayMusic_V2(musTwinkle);
+			Print(0,2,"Play Amazing Grace");
+			Snd_PlayMusic_V2(amazingGrace);
 		}
 
 		if(IN_WasKeyPressed(J_B))

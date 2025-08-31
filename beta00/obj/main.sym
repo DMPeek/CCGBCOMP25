@@ -7,24 +7,13 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
-    _GAMEPLAY                                                       ******** GX
     _LCDC_REG                                                       ******** GX
-    _LOSESCREEN                                                     ******** GX
-    _MENUSCREEN                                                     ******** GX
-    _STAGE                                                          ******** GX
-    _STARTSCREEN                                                    ******** GX
     _TRANSITIONSCREEN                                               ******** GX
     _TileMap                                                        ******** GX
     _Tiles                                                          ******** GX
-    _WINSCREEN                                                      ******** GX
-    _hideCharacterSprites                                           ******** GX
     _joypad                                                         ******** GX
-    _loadLoss                                                       ******** GX
-    _loadMenu                                                       ******** GX
     _loadStage                                                      ******** GX
     _loadStart                                                      ******** GX
-    _loadTransition                                                 ******** GX
-    _loadWin                                                        ******** GX
   0 _main                                                           00000000 GR
     _moveCharacter                                                  ******** GX
     _moveCharacterWithLR                                            ******** GX
@@ -39,13 +28,12 @@ Symbol Table
     _vsync                                                          ******** GX
     _wait_vbl_done                                                  ******** GX
 
-
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      167   flags    0
+   0 _CODE                                      size       8A   flags    0
    1 _DATA                                      size        0   flags    0
    2 _INITIALIZED                               size        0   flags    0
    3 _DABS                                      size        0   flags    8

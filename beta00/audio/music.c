@@ -1,0 +1,62 @@
+#include "SndGBNotes.h"
+#include "utils.h"
+
+const u8 const amazingGrace[] = {
+    PQ, RT, D5,
+    PH, RT, G5,
+    PE, RT, B5,
+    PE, RT, G5,
+    PW, RT, B5,
+    PQ, RT, A5,
+    PH, RT, G5,
+    PQ, RT, E5,
+    PH, RT, D5,
+    END, END, END
+};
+
+const u8 const musTwinkle[]=
+{
+  PQ,RT,C4,
+  PQ,RT,C4,
+  PQ,RT,G4,
+  PQ,RS,G4,
+  PQ,RT,A4,
+  PQ,RT,A4,
+  PH,RT,G4,
+  PQ,RT,F4,
+  PQ,RT,F4,
+  PQ,RT,E4,
+  PQ,RS,E4,
+  PQ,RT,D4,
+  PQ,RT,D4,
+  PH,RS,C4,
+  PQ,RT,G4,
+  PQ,RT,G4,
+  PQ,RT,F4,
+  PQ,RS,F4,
+  PQ,RT,E4,
+  PQ,RT,E4,
+  PH,RS,D4,
+  PQ,RT,G4,
+  PQ,RT,G4,
+  PQ,RT,F4,
+  PQ,RS,F4,
+  PQ,RT,E4,
+  PQ,RT,E4,
+  PH,RS,D4,
+  PQ,RT,C4,
+  PQ,RT,C4,
+  PQ,RT,G4,
+  PQ,RS,G4,
+  PQ,RT,A4,
+  PQ,RT,A4,
+  PH,RT,G4,
+  PQ,RT,F4,
+  PQ,RT,F4,
+  PQ,RT,E4,
+  PQ,RS,E4,
+  PQ,RT,D4,
+  PQ,RT,D4,
+  PW,RT,C4,
+  END,END,END
+};
